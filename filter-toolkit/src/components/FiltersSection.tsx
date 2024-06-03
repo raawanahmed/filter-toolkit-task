@@ -7,11 +7,18 @@ import GenericFilter from "./GenericFilter";
 import { PLPFilter } from "@/mocks/filters";
 
 const FilterSection = () => {
+  const selectedOptions = useFiltersStore(
+    (state) => state.selectedFilteredOptions
+  );
+  const hasSelectedValues = Object.values(selectedOptions).some(
+    (values) => values.length > 0
+  );
+
   const handlOnChange = (values: string[], filterKey: string) => {
     useFiltersStore.setState((state) => ({
       selectedFilteredOptions: {
         ...state.selectedFilteredOptions,
-        [filterKey]: values, 
+        [filterKey]: values,
       },
     }));
   };
@@ -44,15 +51,19 @@ const FilterSection = () => {
                 filterType={filter.type}
                 filterData={filter.values}
                 isMultipleSelection={filter.multi}
-                filterKey={filter.key} 
+                filterKey={filter.key}
                 onChange={(values) => handlOnChange(values, filter.key)}
               />
             </div>
           );
         })}
         <div className="flex flex-col gap-3">
-          <Button onClick={handleClearFilters}>Clear Filters</Button>
-          <Button type="primary">Apply Filters</Button>
+          <Button onClick={handleClearFilters} disabled={!hasSelectedValues}>
+            Clear Filters
+          </Button>
+          <Button type="primary" disabled={!hasSelectedValues}>
+            Apply Filters
+          </Button>
         </div>
       </div>
     </div>
