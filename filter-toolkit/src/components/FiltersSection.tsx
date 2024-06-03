@@ -1,10 +1,7 @@
-'use client'
 import { PLPFilter } from "@/mocks/filters";
 import GenericFilter from "./GenericFilter";
 import { Button } from "antd";
-import { useEffect, useState } from "react";
 const FilterSection = () => {
-  const [isShowSelectedValues, setIsShowSelectedValues] = useState(false);
   const handleClearFilters = () => {};
   const handleApplyFilters = () => {};
   return (
@@ -22,16 +19,13 @@ const FilterSection = () => {
                 filterType={filter.type}
                 filterData={filter.values}
                 isMultipleSelection={filter.multi}
-                isShowSelectedValues={isShowSelectedValues}
               />
             </div>
           );
         })}
         <div className="flex flex-col gap-3">
-          <Button onClick={()=> setIsShowSelectedValues(true)}>Clear Filters</Button>
-          <Button onClick={handleApplyFilters} type="primary">
-            Apply Filters
-          </Button>
+          <Button>Clear Filters</Button>
+          <Button type="primary">Apply Filters</Button>
         </div>
       </div>
     </div>

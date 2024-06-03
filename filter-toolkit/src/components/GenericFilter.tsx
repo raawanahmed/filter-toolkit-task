@@ -8,7 +8,6 @@ type TProps = {
   filterData?: any[];
   filterPlaceholder: string;
   isMultipleSelection?: boolean;
-  isShowSelectedValues: boolean;
 };
 
 const GenericFilter = ({
@@ -17,7 +16,6 @@ const GenericFilter = ({
   filterType,
   filterPlaceholder,
   isMultipleSelection,
-  isShowSelectedValues,
 }: TProps) => {
   return (
     <div>
