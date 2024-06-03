@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import { Select, Input } from "antd";
+import useFiltersStore from "@/stores/filter";
+
 const { Search } = Input;
 
 type TProps = {
@@ -8,6 +10,8 @@ type TProps = {
   filterData?: any[];
   filterPlaceholder: string;
   isMultipleSelection?: boolean;
+  filterKey: string;
+  onChange: (values: string[], filterKey: string) => void;
 };
 
 const GenericFilter = ({
@@ -16,7 +20,13 @@ const GenericFilter = ({
   filterType,
   filterPlaceholder,
   isMultipleSelection,
+  filterKey,
+  onChange,
 }: TProps) => {
+  const selectedOptions = useFiltersStore(
+    (state) => state.selectedFilteredOptions[filterKey] || []
+  );
+
   return (
     <div>
       <p className="mb-2">{filterHeader}</p>
@@ -26,7 +36,8 @@ const GenericFilter = ({
           allowClear
           placeholder={`Select ${filterPlaceholder}`}
           style={{ width: "100%" }}
-        //  onChange={handleChange}
+          value={selectedOptions}
+          onChange={(values) => onChange(values, filterKey)}
           options={filterData?.map((item) => ({
             label: item.name,
             value: item.code,

@@ -1,9 +1,34 @@
-import { PLPFilter } from "@/mocks/filters";
-import GenericFilter from "./GenericFilter";
+"use client";
+
+import React from "react";
 import { Button } from "antd";
+import useFiltersStore from "@/stores/filter";
+import GenericFilter from "./GenericFilter";
+import { PLPFilter } from "@/mocks/filters";
+
 const FilterSection = () => {
-  const handleClearFilters = () => {};
+  const handlOnChange = (values: string[], filterKey: string) => {
+    useFiltersStore.setState((state) => ({
+      selectedFilteredOptions: {
+        ...state.selectedFilteredOptions,
+        [filterKey]: values, 
+      },
+    }));
+  };
+
+  const handleClearFilters = () => {
+    const filterKeys = PLPFilter.filters.map((filter) => filter.key);
+    filterKeys.forEach((key) => {
+      useFiltersStore.setState((state) => ({
+        selectedFilteredOptions: {
+          ...state.selectedFilteredOptions,
+          [key]: [],
+        },
+      }));
+    });
+  };
   const handleApplyFilters = () => {};
+
   return (
     <div className="w-1/5">
       <div className="border">
@@ -19,12 +44,14 @@ const FilterSection = () => {
                 filterType={filter.type}
                 filterData={filter.values}
                 isMultipleSelection={filter.multi}
+                filterKey={filter.key} 
+                onChange={(values) => handlOnChange(values, filter.key)}
               />
             </div>
           );
         })}
         <div className="flex flex-col gap-3">
-          <Button>Clear Filters</Button>
+          <Button onClick={handleClearFilters}>Clear Filters</Button>
           <Button type="primary">Apply Filters</Button>
         </div>
       </div>
