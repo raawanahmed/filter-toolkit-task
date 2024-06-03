@@ -1,9 +1,9 @@
-import Image from "next/image";
+import FilterSection from "@/components/FiltersSection";
 
 export default function Home() {
   return (
-    <main className="flex items-center justify-between p-8">
-      test
+    <main className="p-8">
+      <FilterSection />
     </main>
   );
 }
