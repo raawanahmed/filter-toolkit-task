@@ -41,8 +41,9 @@ const GenericFilter = ({
   const createQueryString = useCallback(
     (values: string[]) => {
       const params = new URLSearchParams(searchParams.toString());
-      if (values.length) params.set(filterPlaceholder, values.join(","));
-      else params.set(filterPlaceholder, values[0]);
+      if (typeof values !== "string")
+        params.set(filterPlaceholder, values.join(","));
+      else params.set(filterPlaceholder, values);
       return params.toString();
     },
     [filterPlaceholder, searchParams]
