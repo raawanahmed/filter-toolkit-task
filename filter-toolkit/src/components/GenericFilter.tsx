@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Select, Input } from "antd";
-import useFiltersStore from "@/stores/filter";
+import { usePathname, useSearchParams, useRouter } from "next/navigation";
 
 const { Search } = Input;
 
@@ -23,9 +23,36 @@ const GenericFilter = ({
   filterKey,
   onChange,
 }: TProps) => {
-  const selectedOptions = useFiltersStore(
-    (state) => state.selectedFilteredOptions[filterKey] || []
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+
+  useEffect(() => {
+    const filterValues = searchParams.get(filterPlaceholder);
+    console.log(filterValues);
+    if (filterValues) {
+      setSelectedOptions(filterValues.split(","));
+    } else {
+      setSelectedOptions([]);
+    }
+  }, [searchParams, filterPlaceholder]);
+
+  const createQueryString = useCallback(
+    (values: string[]) => {
+      const params = new URLSearchParams(searchParams.toString());
+      if (values.length) params.set(filterPlaceholder, values.join(","));
+      else params.set(filterPlaceholder, values[0]);
+      return params.toString();
+    },
+    [filterPlaceholder, searchParams]
   );
+
+  const handleChange = (values: string[]) => {
+    setSelectedOptions(values);
+    const params = createQueryString(values);
+    router.push(pathname + "?" + params.toString());
+  };
 
   return (
     <div>
@@ -37,7 +64,7 @@ const GenericFilter = ({
           placeholder={`Select ${filterPlaceholder}`}
           style={{ width: "100%" }}
           value={selectedOptions}
-          onChange={(values) => onChange(values, filterKey)}
+          onChange={(value) => handleChange(value)}
           options={filterData?.map((item) => ({
             label: item.name,
             value: item.code,
