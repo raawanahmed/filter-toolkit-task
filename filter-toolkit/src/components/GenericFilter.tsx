@@ -27,10 +27,12 @@ const GenericFilter = ({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+  //   const selectedOptions = useFiltersStore(
+  //     (state) => state.selectedFilteredOptions[filterKey] || []
+  //   );
 
   useEffect(() => {
     const filterValues = searchParams.get(filterPlaceholder);
-    console.log(filterValues);
     if (filterValues) {
       setSelectedOptions(filterValues.split(","));
     } else {

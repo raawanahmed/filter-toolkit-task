@@ -1,20 +1,38 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "antd";
 import useFiltersStore from "@/stores/filter";
 import GenericFilter from "./GenericFilter";
 import { PLPFilter } from "@/mocks/filters";
+import { usePathname, useSearchParams, useRouter } from "next/navigation";
 
 const FilterSection = () => {
-  const selectedOptions = useFiltersStore(
-    (state) => state.selectedFilteredOptions
-  );
-  const hasSelectedValues = Object.values(selectedOptions).some(
-    (values) => values.length > 0
-  );
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [hasSelectedValues, setHasSelectedValues] = useState(false);
+//   const selectedOptions = useFiltersStore(
+//     (state) => state.selectedFilteredOptions
+//   );
+//   const hasSelectedValues = Object.values(selectedOptions).some(
+//     (values) => values.length > 0
+//   );
+
+  useEffect(() => {
+    const checkSelectedValues = () => {
+      const hasValues = PLPFilter.filters.some((filter) => {
+        const filterValues = searchParams.get(filter.name);
+        return filterValues && filterValues.split(",").length > 0;
+      });
+      setHasSelectedValues(hasValues);
+    };
+
+    checkSelectedValues();
+  }, [searchParams]);
 
   const handlOnChange = (values: string[], filterKey: string) => {
+    // the old way while using the zustand store
     useFiltersStore.setState((state) => ({
       selectedFilteredOptions: {
         ...state.selectedFilteredOptions,
@@ -24,15 +42,17 @@ const FilterSection = () => {
   };
 
   const handleClearFilters = () => {
-    const filterKeys = PLPFilter.filters.map((filter) => filter.key);
-    filterKeys.forEach((key) => {
-      useFiltersStore.setState((state) => ({
-        selectedFilteredOptions: {
-          ...state.selectedFilteredOptions,
-          [key]: [],
-        },
-      }));
-    });
+    // the old way while using the zustand store
+    // const filterKeys = PLPFilter.filters.map((filter) => filter.key);
+    // filterKeys.forEach((key) => {
+    //   useFiltersStore.setState((state) => ({
+    //     selectedFilteredOptions: {
+    //       ...state.selectedFilteredOptions,
+    //       [key]: [],
+    //     },
+    //   }));
+    // });
+    router.push(pathname);
   };
   const handleApplyFilters = () => {};
 
